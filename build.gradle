@@ -9,6 +9,9 @@ String myAppName = 'TransitiveOrthologPipeline'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://packages.atlassian.com/maven-3rdparty'
+    }
 }
 
 dependencies {
