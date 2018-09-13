@@ -1,0 +1,51 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+// JDK 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+mainClassName = 'edu.mcw.rgd.TransitiveOrthologPipeline.Manager'
+String myAppName = 'TransitiveOrthologPipeline'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'commons-dbcp:commons-dbcp:1.4'
+    compile 'commons-net:commons-net:3.6'
+    compile 'log4j:log4j:1.2.17'
+    compile 'org.apache.httpcomponents:httpclient:4.5.6'
+    compile 'org.springframework:spring-beans:5.0.8.RELEASE'
+    compile 'org.springframework:spring-jdbc:5.0.8.RELEASE'
+    compile 'com.oracle:ojdbc6:11.2.0.4.0-atlassian-hosted'
+
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+
+// overrides below are needed only for jenkins in RGD
+// otherwise the names of build scripts and distros will default to the jenkins job name, f.e. 'dev_CTDDisease'
+//   overrides below will guarantee than on both DEV and other job groups, the generated dfiles/directories are the same
+//   as the project name
+
+startScripts {
+    applicationName = myAppName
+}
+
+jar {
+    baseName = myAppName
+    manifest {
+        attributes(
+            'Built-By': System.getProperty('user.name'),
+            'Built-Date': new Date(),
+            'Built-JDK': System.getProperty('java.version'),
+            'Main-Class': mainClassName
+        )
+    }
+}
+
+distributions {
+    main {
+        baseName = myAppName
+    }
+}
