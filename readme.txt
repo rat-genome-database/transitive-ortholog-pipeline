@@ -1,3 +1,6 @@
+v. 1.1.2, Jan 30, 2019
+  - added support for PIG
+
 v. 1.1.1, Sep 13, 2018
   - moved to github
   

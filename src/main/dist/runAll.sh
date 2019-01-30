@@ -9,7 +9,7 @@ if [ "$SERVER" == "REED" ]; then
   EMAILLIST=rgd.developers@mcw.edu,jrsmith@mcw.edu
 fi
 
-species_list=( 2 3 4 5 6 7 8 )
+species_list=( 2 3 4 5 6 7 8 9 )
 
 echo "" > $APPDIR/run.log
 for species in "${species_list[@]}"; do
