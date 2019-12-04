@@ -3,8 +3,7 @@ package edu.mcw.rgd.TransitiveOrthologPipeline;
 import edu.mcw.rgd.datamodel.Ortholog;
 import edu.mcw.rgd.datamodel.SpeciesType;
 import edu.mcw.rgd.process.Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
@@ -24,7 +23,7 @@ public class Manager {
     public static final int UPDATE_COUNTER = 1;
 
     private String version;
-    final static Log logger = LogFactory.getLog("summary");
+    final static Logger logger = Logger.getLogger("summary");
     private int transitiveOrthologPipelineId;
     private String xrefDataSrc;
     private String xrefDataSet;

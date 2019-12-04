@@ -1,3 +1,6 @@
+Dec 04, 2019
+  moved to log4j from apache commons logging
+
 v. 1.1.2, Jan 30, 2019
   - added support for PIG
 

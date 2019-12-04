@@ -1,11 +1,9 @@
 package edu.mcw.rgd.TransitiveOrthologPipeline;
 
-
 import edu.mcw.rgd.dao.impl.OrthologDAO;
 import edu.mcw.rgd.datamodel.Ortholog;
 import edu.mcw.rgd.datamodel.SpeciesType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -18,8 +16,8 @@ import java.util.List;
  */
 public class Dao {
 
-    private final static Log logInserted = LogFactory.getLog("inserted");
-    private final static Log logDeleted = LogFactory.getLog("deleted");
+    private final static Logger logInserted = Logger.getLogger("inserted");
+    private final static Logger logDeleted = Logger.getLogger("deleted");
 
     private Date runDate;
     private int transitiveOrthologType;

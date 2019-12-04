@@ -1,7 +1,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	<bean id="main" class="edu.mcw.rgd.TransitiveOrthologPipeline.Manager">
-        <property name="version" value="Transitive Ortholog Pipeline v 1.1.2 as of Jan 30, 2019" />
+        <property name="version" value="Transitive Ortholog Pipeline   -- build Dec 04, 2019" />
 		<property name="transitiveOrthologType" value="13"/>
 		<property name="transitiveOrthologPipelineId" value="333"/>
 		<property name="xrefDataSrc" value="Transitive Ortholog Pipeline" />
