@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by cdursun on 2/3/2017.
- * <p>
+ * @author cdursun
+ * @since 2/3/2017
  * wrapper for all calls to database
  */
 public class Dao {

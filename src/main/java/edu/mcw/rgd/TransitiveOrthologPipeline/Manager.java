@@ -30,16 +30,6 @@ public class Manager {
     private int transitiveOrthologType;
     private Dao dao;
 
-    public int getSubjectSpeciesType() {
-        return subjectSpeciesType;
-    }
-
-    public void setSubjectSpeciesType(int subjectSpeciesType) {
-        this.subjectSpeciesType = subjectSpeciesType;
-    }
-
-    private int subjectSpeciesType;
-
     /**
      * load spring configuration from properties/AppConfigure.xml file
      * and run the pipeline
@@ -50,30 +40,50 @@ public class Manager {
 
         DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
         new XmlBeanDefinitionReader(bf).loadBeanDefinitions(new FileSystemResource("properties/AppConfigure.xml"));
-
         Manager manager = (Manager) bf.getBean("main");
 
-        if (args == null || args.length == 0 || Integer.parseInt(args[0]) == SpeciesType.HUMAN){
+        manager.logger.info(manager.getVersion());
+
+
+        if( args == null || args.length == 0 ){
             System.out.println("");
-            System.out.println("                 Missing parameter!                  ");
+            System.out.println("            Missing parameter!                  ");
             System.out.println("----------- Run with subject species type KEY other than Human! -----------");
             System.exit(0);
         }
-        else{
-            manager.setSubjectSpeciesType(Integer.parseInt(args[0]));
 
-            if (SpeciesType.getCommonName(manager.getSubjectSpeciesType()).equals("")){
+        int speciesTypeKey = SpeciesType.parse(args[0]);
+
+        if( speciesTypeKey == SpeciesType.HUMAN ){
+            System.out.println("");
+            System.out.println("            Wrong parameter!                  ");
+            System.out.println("----------- Run with subject species type KEY other than Human! -----------");
+            System.exit(0);
+        }
+
+        else{
+
+            if (SpeciesType.getCommonName(speciesTypeKey).equals("")){
                 System.out.println("There is no such species type!");
                 System.exit(0);
             }
 
-            logger.info("========== " +  SpeciesType.getCommonName(manager.getSubjectSpeciesType())  + " ==========");
+            logger.info("========== Species: " +  SpeciesType.getCommonName(speciesTypeKey)  + " ==========");
         }
 
         Date time0 = Calendar.getInstance().getTime();
 
         try {
-            manager.run(time0);
+            if( speciesTypeKey!=0 ) {
+                manager.run(speciesTypeKey, time0);
+            } else {
+                for( int sp: SpeciesType.getSpeciesTypeKeys() ) {
+                    if( sp==SpeciesType.ALL || sp==SpeciesType.HUMAN ) {
+                        continue;
+                    }
+                    manager.run(sp, time0);
+                }
+            }
         } catch(Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -88,11 +98,9 @@ public class Manager {
      * print connection information, download the genes-diseases file from CTD, parse it, QC it and load the annotations into RGD
      * @throws Exception
      */
-    public void run(Date runDate) throws Exception {
+    public void run(int speciesTypeKey, Date runDate) throws Exception {
 
-        logger.info(getVersion());
-
-        dao.init(runDate, this.transitiveOrthologType, this.transitiveOrthologPipelineId, this.subjectSpeciesType);
+        dao.init(runDate, this.transitiveOrthologType, this.transitiveOrthologPipelineId, speciesTypeKey);
         Process process = new Process(runDate, this.transitiveOrthologType, this.transitiveOrthologPipelineId, this.xrefDataSrc, this.xrefDataSet);
 
         //get subject species human orthologs
@@ -105,7 +113,8 @@ public class Manager {
 
         List<Ortholog> subjectSpeciesHumanOrthologs = dao.getSubjectSpeciesHumanOrthologs();
 
-        logger.info("Orthologs between " + SpeciesType.getCommonName(this.subjectSpeciesType) + " and Human : " + subjectSpeciesHumanOrthologs.size());
+        logger.info("");
+        logger.info("Orthologs between " + SpeciesType.getCommonName(speciesTypeKey) + " and Human : " + subjectSpeciesHumanOrthologs.size());
 
         AtomicInteger[] counters = new AtomicInteger[2];
         for( int i=0; i<counters.length; i++ ) {

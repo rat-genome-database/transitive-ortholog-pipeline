@@ -17,19 +17,15 @@ String myAppName = 'TransitiveOrthologPipeline'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://packages.atlassian.com/maven-3rdparty'
-    }
 }
 
 dependencies {
     compile 'commons-dbcp:commons-dbcp:1.4'
     compile 'commons-net:commons-net:3.6'
     compile 'log4j:log4j:1.2.17'
-    compile 'org.apache.httpcomponents:httpclient:4.5.7'
-    compile 'org.springframework:spring-beans:5.1.5.RELEASE'
-    compile 'org.springframework:spring-jdbc:5.1.5.RELEASE'
-    compile 'com.oracle:ojdbc6:11.2.0.4.0-atlassian-hosted'
+    compile 'org.apache.httpcomponents:httpclient:4.5.8'
+    compile 'org.springframework:spring-beans:5.1.6.RELEASE'
+    compile 'org.springframework:spring-jdbc:5.1.6.RELEASE'
 
     compile fileTree(dir: 'lib', include: '*.jar')
 }

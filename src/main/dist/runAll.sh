@@ -9,11 +9,7 @@ if [ "$SERVER" == "REED" ]; then
   EMAILLIST=rgd.developers@mcw.edu,jrsmith@mcw.edu
 fi
 
-species_list=( 2 3 4 5 6 7 8 9 )
-
-echo "" > $APPDIR/run.log
-for species in "${species_list[@]}"; do
-    $APPDIR/run.sh "$species" 2>&1 >> $APPDIR/run.log
-done
+# run for all species in RGD, except human (transitivie orthologs are made for human and given species)
+$APPDIR/run.sh "0" 2>&1 > $APPDIR/run.log
 
 mailx -s "[$SERVER] transitive orthos for all species" $EMAILLIST < $APPDIR/logs/summary.log

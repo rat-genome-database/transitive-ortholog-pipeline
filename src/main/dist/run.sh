@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# as an cmdline parameter, pass the species type key (f.e. 3), or common species name (f.e. rat)
+#  to run the pipeline for given species
+
 . /etc/profile
 
 APPNAME=TransitiveOrthologPipeline
