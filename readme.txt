@@ -1,3 +1,6 @@
+May 10, 2020
+  updated jar dependencies
+
 Jan 31, 2020
   updated runAll.sh and underlying code to run the pipeline for all species in the database
     (no need to eplcitly specify on the command line which species should be processed)
