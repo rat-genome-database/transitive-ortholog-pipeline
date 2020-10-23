@@ -6,7 +6,7 @@ APPDIR=/home/rgddata/pipelines/$APPNAME
 EMAILLIST=cdursun@mcw.edu,mtutaj@mcw.edu
 
 if [ "$SERVER" == "REED" ]; then
-  EMAILLIST=rgd.developers@mcw.edu,jrsmith@mcw.edu
+  EMAILLIST=rgd.devops@mcw.edu,jrsmith@mcw.edu
 fi
 
 # run for all species in RGD, except human (transitivie orthologs are made for human and given species)

@@ -1,3 +1,6 @@
+Oct 23, 2020
+  simplified dao code
+
 May 10, 2020
   updated jar dependencies
 

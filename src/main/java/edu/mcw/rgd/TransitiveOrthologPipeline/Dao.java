@@ -6,7 +6,6 @@ import edu.mcw.rgd.datamodel.SpeciesType;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,20 +43,10 @@ public class Dao {
     */
     public List<Ortholog> getOrthologs(Ortholog srcOrtho, Ortholog humanOrtho) throws Exception{
         List<Ortholog> srcOrthologs = orthologDAO.getOrthologsForSourceRgdId(srcOrtho.getSrcRgdId());
-        for (Iterator<Ortholog> iterator = srcOrthologs.iterator(); iterator.hasNext();) {
-            Ortholog o = iterator.next();
-            if (o.getDestSpeciesTypeKey() != humanOrtho.getDestSpeciesTypeKey()) {
-                iterator.remove();
-            }
-        }
+        srcOrthologs.removeIf(o -> o.getDestSpeciesTypeKey() != humanOrtho.getDestSpeciesTypeKey());
 
         List<Ortholog> destOrthologs = orthologDAO.getOrthologsForSourceRgdId(humanOrtho.getDestRgdId());
-        for (Iterator<Ortholog> iterator = destOrthologs.iterator(); iterator.hasNext();) {
-            Ortholog o = iterator.next();
-            if (o.getDestSpeciesTypeKey() != srcOrtho.getSrcSpeciesTypeKey()) {
-                iterator.remove();
-            }
-        }
+        destOrthologs.removeIf(o -> o.getDestSpeciesTypeKey() != srcOrtho.getSrcSpeciesTypeKey());
 
         srcOrthologs.addAll(destOrthologs);
         return srcOrthologs;
@@ -94,12 +83,8 @@ public class Dao {
         List<Ortholog> unmodifiedOrthologs  = orthologDAO.getOrthologsModifiedBefore(new Date(this.runDate.getTime() - (min * 1000 * 60) ));
 
         // remove the non-transitive orthologs and the transitive orthologs aren't related with this subject type
-        Iterator<Ortholog> it = unmodifiedOrthologs.iterator();
-        while( it.hasNext() ) {
-            Ortholog o = it.next();
-            if( o.getOrthologTypeKey() != this.transitiveOrthologType || (o.getSrcSpeciesTypeKey() != this.subjectSpeciesType && o.getDestSpeciesTypeKey() != this.subjectSpeciesType))
-                        it.remove();
-        }
+        unmodifiedOrthologs.removeIf(o -> o.getOrthologTypeKey() != this.transitiveOrthologType
+                || (o.getSrcSpeciesTypeKey() != this.subjectSpeciesType && o.getDestSpeciesTypeKey() != this.subjectSpeciesType));
 
         return unmodifiedOrthologs;
     }
@@ -115,12 +100,7 @@ public class Dao {
         List<Ortholog> humanOrthologs = orthologDAO.getOrthologsForSourceRgdId(rgdId);
 
         // remove human-exludingSpeciesTypeKey orthologs
-        Iterator<Ortholog> it = humanOrthologs.iterator();
-        while( it.hasNext() ) {
-            Ortholog o = it.next();
-            if( o.getDestSpeciesTypeKey() == this.subjectSpeciesType)
-                it.remove();
-        }
+        humanOrthologs.removeIf(o -> o.getDestSpeciesTypeKey() == this.subjectSpeciesType);
 
         return humanOrthologs;
     }
