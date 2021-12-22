@@ -3,7 +3,7 @@
 SERVER=`hostname -s | tr '[a-z]' '[A-Z]'`
 APPNAME=TransitiveOrthologPipeline
 APPDIR=/home/rgddata/pipelines/$APPNAME
-EMAILLIST=cdursun@mcw.edu,mtutaj@mcw.edu
+EMAILLIST=mtutaj@mcw.edu
 
 if [ "$SERVER" == "REED" ]; then
   EMAILLIST=rgd.devops@mcw.edu,jrsmith@mcw.edu

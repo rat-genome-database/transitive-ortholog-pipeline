@@ -3,7 +3,8 @@ package edu.mcw.rgd.TransitiveOrthologPipeline;
 import edu.mcw.rgd.datamodel.Ortholog;
 import edu.mcw.rgd.datamodel.SpeciesType;
 import edu.mcw.rgd.process.Utils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
@@ -23,7 +24,7 @@ public class Manager {
     public static final int UPDATE_COUNTER = 1;
 
     private String version;
-    final static Logger logger = Logger.getLogger("summary");
+    Logger logger = LogManager.getLogger("status");
     private int transitiveOrthologPipelineId;
     private String xrefDataSrc;
     private String xrefDataSet;
@@ -68,7 +69,7 @@ public class Manager {
                 System.exit(0);
             }
 
-            logger.info("========== Species: " +  SpeciesType.getCommonName(speciesTypeKey)  + " ==========");
+            manager.logger.info("========== Species: " +  SpeciesType.getCommonName(speciesTypeKey)  + " ==========");
         }
 
         Date time0 = Calendar.getInstance().getTime();
@@ -85,13 +86,12 @@ public class Manager {
                 }
             }
         } catch(Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+            Utils.printStackTrace(e, manager.logger);
             throw e;
         }
 
-        logger.info("========== Elapsed time " + Utils.formatElapsedTime(time0.getTime(), System.currentTimeMillis()) + " ==========");
-        logger.info("");
+        manager.logger.info("========== Elapsed time " + Utils.formatElapsedTime(time0.getTime(), System.currentTimeMillis()) + " ==========");
+        manager.logger.info("");
     }
 
     /**
