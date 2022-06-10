@@ -1,3 +1,6 @@
+Jun 10, 2022
+  tuned up logging
+
 Dec 21, 2021
   updated log4j to avoid zero exploit
 
