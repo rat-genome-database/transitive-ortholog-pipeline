@@ -1,3 +1,6 @@
+Jun 21, 2022
+  removed obsolete log4j.properties file
+
 Jun 10, 2022
   tuned up logging
 
