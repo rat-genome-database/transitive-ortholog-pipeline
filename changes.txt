@@ -1,3 +1,6 @@
+Jan 27, 2023
+  updated build.gradle to be gradle 6.x + compatible
+
 Jun 21, 2022
   removed obsolete log4j.properties file
 
