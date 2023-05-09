@@ -90,7 +90,7 @@ public class Manager {
             throw e;
         }
 
-        manager.logger.info("========== Elapsed time " + Utils.formatElapsedTime(time0.getTime(), System.currentTimeMillis()) + " ==========");
+        manager.logger.info("=== OK === elapsed time " + Utils.formatElapsedTime(time0.getTime(), System.currentTimeMillis()));
         manager.logger.info("");
     }
 

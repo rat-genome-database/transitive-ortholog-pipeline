@@ -1,3 +1,6 @@
+May 09, 2023
+  renamed distro to 'transitive-ortholog-pipeline'
+
 Jan 27, 2023
   updated build.gradle to be gradle 6.x + compatible
 
