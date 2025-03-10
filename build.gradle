@@ -23,14 +23,16 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.commons:commons-dbcp2:2.11.0'
-    implementation 'commons-net:commons-net:3.9.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.22.0'
+    implementation ('org.apache.commons:commons-dbcp2:2.12.0') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    implementation 'commons-net:commons-net:3.10.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.0'
     implementation ('org.apache.httpcomponents:httpclient:4.5.14') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation 'com.oracle.database.jdbc:ojdbc11:23.7.0.25.01'
-    implementation 'org.springframework:spring-jdbc:6.1.17'
+    implementation 'org.springframework:spring-jdbc:6.2.3'
 
     implementation fileTree(dir: 'lib', include: '*.jar')
 }
