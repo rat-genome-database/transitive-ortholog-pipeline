@@ -1,3 +1,6 @@
+Jul 24, 2025
+  fixed email recipients in summary email script
+
 Mar 10, 2025
   updated dependencies
 
