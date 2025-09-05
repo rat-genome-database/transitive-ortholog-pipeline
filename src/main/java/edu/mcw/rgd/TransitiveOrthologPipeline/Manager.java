@@ -20,9 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Manager {
 
-    public static final int INSERT_COUNTER = 0;
-    public static final int UPDATE_COUNTER = 1;
-
     private String version;
     Logger logger = LogManager.getLogger("status");
     private int transitiveOrthologPipelineId;
@@ -65,7 +62,7 @@ public class Manager {
         else{
 
             if (SpeciesType.getCommonName(speciesTypeKey).equals("")){
-                System.out.println("There is no such species type!");
+                System.out.println("There is no such species type!   - speciesTypeKey="+speciesTypeKey);
                 System.exit(0);
             }
 
@@ -79,7 +76,7 @@ public class Manager {
                 manager.run(speciesTypeKey, time0);
             } else {
                 for( int sp: SpeciesType.getSpeciesTypeKeys() ) {
-                    if( sp==SpeciesType.ALL || sp==SpeciesType.HUMAN ) {
+                    if( !SpeciesType.isSearchable(sp) || sp==SpeciesType.HUMAN ) {
                         continue;
                     }
                     manager.run(sp, time0);
@@ -115,6 +112,9 @@ public class Manager {
 
         logger.info("");
         logger.info("Orthologs between " + SpeciesType.getCommonName(speciesTypeKey) + " and Human : " + subjectSpeciesHumanOrthologs.size());
+
+        final int INSERT_COUNTER = 0;
+        final int UPDATE_COUNTER = 1;
 
         AtomicInteger[] counters = new AtomicInteger[2];
         for( int i=0; i<counters.length; i++ ) {

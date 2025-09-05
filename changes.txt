@@ -1,3 +1,6 @@
+Sep 05, 2025
+  run the pipeline only for public species (previously: for all species)
+
 Aug 18, 2025
   updated dependencies
 
