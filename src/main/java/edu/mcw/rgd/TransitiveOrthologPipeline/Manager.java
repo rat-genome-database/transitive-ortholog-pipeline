@@ -2,6 +2,7 @@ package edu.mcw.rgd.TransitiveOrthologPipeline;
 
 import edu.mcw.rgd.datamodel.Ortholog;
 import edu.mcw.rgd.datamodel.SpeciesType;
+import edu.mcw.rgd.process.MemoryMonitor;
 import edu.mcw.rgd.process.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +43,8 @@ public class Manager {
 
         manager.logger.info(manager.getVersion());
 
+        MemoryMonitor memoryMonitor = new MemoryMonitor();
+        memoryMonitor.start();
 
         if( args == null || args.length == 0 ){
             System.out.println("");
@@ -87,6 +90,8 @@ public class Manager {
             throw e;
         }
 
+        memoryMonitor.stop();
+        manager.logger.info(memoryMonitor.getSummary());
         manager.logger.info("=== OK === elapsed time " + Utils.formatElapsedTime(time0.getTime(), System.currentTimeMillis()));
         manager.logger.info("");
     }

@@ -1,3 +1,6 @@
+May 12, 2026
+  added MemoryMonitor; updated dependencies
+
 Sep 05, 2025
   run the pipeline only for public species (previously: for all species)
 
