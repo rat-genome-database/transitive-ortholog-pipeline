@@ -106,15 +106,25 @@ public class Dao {
      */
 
     public List<Ortholog> getUnmodifiedTransitiveOrthologsSince(int min ) throws Exception {
-        // subtract the configured buffer (min minutes) from runDate so this run's own freshly
-        // inserted/updated orthologs are not returned (and thus not deleted)
-        List<Ortholog> unmodifiedOrthologs  = orthologDAO.getOrthologsModifiedBefore(new Date(this.runDate.getTime() - (min * 60_000L) ));
+        // delete cutoff: subtract the configured buffer (min minutes) from runDate so this run's
+        // own freshly inserted/updated orthologs are excluded (and thus not deleted)
+        Date cutoff = new Date(this.runDate.getTime() - (min * 60_000L));
 
-        // remove the non-transitive orthologs and the transitive orthologs aren't related with this subject type
-        unmodifiedOrthologs.removeIf(o -> o.getOrthologTypeKey() != this.transitiveOrthologType
-                || (o.getSrcSpeciesTypeKey() != this.subjectSpeciesType && o.getDestSpeciesTypeKey() != this.subjectSpeciesType));
+        // Filter in SQL -- transitive type AND involving the subject species AND modified before the
+        // cutoff -- rather than pulling the whole GENETOGENE_RGD_ID_RLT table (~1.8M rows) into Java
+        // and filtering with removeIf. The previous approach dominated runtime (~4-5 min/species to
+        // delete ~0 rows).
+        String sql = """
+            SELECT o.*, s.species_type_key src_species_type_key, d.species_type_key dest_species_type_key
+            FROM genetogene_rgd_id_rlt o, rgd_ids s, rgd_ids d
+            WHERE o.src_rgd_id=s.rgd_id AND o.dest_rgd_id=d.rgd_id
+              AND o.last_modified_date < ?
+              AND o.ortholog_type_key = ?
+              AND (s.species_type_key = ? OR d.species_type_key = ?)
+            """;
 
-        return unmodifiedOrthologs;
+        return orthologDAO.executeOrthologQuery(sql, cutoff, this.transitiveOrthologType,
+                this.subjectSpeciesType, this.subjectSpeciesType);
     }
 
     /**
