@@ -6,8 +6,10 @@ import edu.mcw.rgd.datamodel.SpeciesType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author cdursun
@@ -31,9 +33,29 @@ public class Dao {
         this.transitiveOrthologType = transitiveOrthologType;
         this.transitiveOrthologPipelineId = transitiveOrthologPipelineId;
         this.subjectSpeciesType = subjectSpeciesType;
+        // the ortholog cache is keyed by source rgd id only; clear it between species runs
+        // (runAll.sh "0" reuses this bean across every species)
+        orthoCache.clear();
     }
 
     private OrthologDAO orthologDAO = new OrthologDAO();
+
+    // memoizes orthologDAO.getOrthologsForSourceRgdId(rgdId) for the duration of one species run --
+    // the same gene is looked up many times across the N x M parallel comparison loop
+    private final ConcurrentHashMap<Integer, List<Ortholog>> orthoCache = new ConcurrentHashMap<>();
+
+    /**
+     * orthologs whose SOURCE is the given rgd id, memoized for the run.
+     * NOTE: the returned list is the shared cached instance -- callers must not mutate it.
+     */
+    private List<Ortholog> getOrthologsForSourceRgdId(int rgdId) throws Exception {
+        List<Ortholog> orthos = orthoCache.get(rgdId);
+        if( orthos==null ) {
+            orthos = orthologDAO.getOrthologsForSourceRgdId(rgdId);
+            orthoCache.put(rgdId, orthos);
+        }
+        return orthos;
+    }
 
     public List<Ortholog> getSubjectSpeciesHumanOrthologs() throws Exception{
         return orthologDAO.getAllOrthologs(this.subjectSpeciesType, SpeciesType.HUMAN);
@@ -43,14 +65,19 @@ public class Dao {
      * returns two orthologs, including the reciprocal one between srcRgdId and destRgdId
     */
     public List<Ortholog> getOrthologs(Ortholog srcOrtho, Ortholog humanOrtho) throws Exception{
-        List<Ortholog> srcOrthologs = orthologDAO.getOrthologsForSourceRgdId(srcOrtho.getSrcRgdId());
-        srcOrthologs.removeIf(o -> o.getDestSpeciesTypeKey() != humanOrtho.getDestSpeciesTypeKey());
-
-        List<Ortholog> destOrthologs = orthologDAO.getOrthologsForSourceRgdId(humanOrtho.getDestRgdId());
-        destOrthologs.removeIf(o -> o.getDestSpeciesTypeKey() != srcOrtho.getSrcSpeciesTypeKey());
-
-        srcOrthologs.addAll(destOrthologs);
-        return srcOrthologs;
+        // filter into a fresh list (the cached lists must not be mutated)
+        List<Ortholog> result = new ArrayList<>();
+        for( Ortholog o: getOrthologsForSourceRgdId(srcOrtho.getSrcRgdId()) ) {
+            if( o.getDestSpeciesTypeKey() == humanOrtho.getDestSpeciesTypeKey() ) {
+                result.add(o);
+            }
+        }
+        for( Ortholog o: getOrthologsForSourceRgdId(humanOrtho.getDestRgdId()) ) {
+            if( o.getDestSpeciesTypeKey() == srcOrtho.getSrcSpeciesTypeKey() ) {
+                result.add(o);
+            }
+        }
+        return result;
     }
 
     public int updateLastModified(List<Ortholog> orthologs) throws Exception {
@@ -79,9 +106,9 @@ public class Dao {
      */
 
     public List<Ortholog> getUnmodifiedTransitiveOrthologsSince(int min ) throws Exception {
-        // calls getOrthologsModifiedBefore method by subtracting 5 minutes from runDate
-        // otherwise newly updated and inserted orthologs are returned which we don't want
-        List<Ortholog> unmodifiedOrthologs  = orthologDAO.getOrthologsModifiedBefore(new Date(this.runDate.getTime() - (min * 1000 * 60) ));
+        // subtract the configured buffer (min minutes) from runDate so this run's own freshly
+        // inserted/updated orthologs are not returned (and thus not deleted)
+        List<Ortholog> unmodifiedOrthologs  = orthologDAO.getOrthologsModifiedBefore(new Date(this.runDate.getTime() - (min * 60_000L) ));
 
         // remove the non-transitive orthologs and the transitive orthologs aren't related with this subject type
         unmodifiedOrthologs.removeIf(o -> o.getOrthologTypeKey() != this.transitiveOrthologType
@@ -98,12 +125,15 @@ public class Dao {
      */
     public List<Ortholog> getHumanOtherSpeciesOrthologs(int rgdId) throws Exception{
 
-        List<Ortholog> humanOrthologs = orthologDAO.getOrthologsForSourceRgdId(rgdId);
-
-        // remove human-exludingSpeciesTypeKey orthologs
-        humanOrthologs.removeIf(o -> o.getDestSpeciesTypeKey() == this.subjectSpeciesType);
-
-        return humanOrthologs;
+        // human orthologs to every species except the subject species (filtered into a fresh
+        // list -- the cached list must not be mutated)
+        List<Ortholog> result = new ArrayList<>();
+        for( Ortholog o: getOrthologsForSourceRgdId(rgdId) ) {
+            if( o.getDestSpeciesTypeKey() != this.subjectSpeciesType ) {
+                result.add(o);
+            }
+        }
+        return result;
     }
 
     /**

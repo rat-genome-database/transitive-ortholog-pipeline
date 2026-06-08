@@ -97,7 +97,9 @@ public class Manager {
     }
 
     /**
-     * print connection information, download the genes-diseases file from CTD, parse it, QC it and load the annotations into RGD
+     * generate transitive orthologs between the given subject species and all other (non-human) species,
+     * linked through their common human orthologs: insert missing reciprocal transitive orthologs,
+     * refresh last-modified dates on still-valid ones, and delete the ones left untouched by this run
      * @throws Exception
      */
     public void run(int speciesTypeKey, Date runDate) throws Exception {

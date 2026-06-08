@@ -1,3 +1,6 @@
+Jun 8, 2026
+  cached per-gene ortholog lookups to cut redundant DB queries; removed unused commons-net/httpclient deps; minor cleanups; updated dependencies
+
 May 12, 2026
   added MemoryMonitor; updated dependencies
 

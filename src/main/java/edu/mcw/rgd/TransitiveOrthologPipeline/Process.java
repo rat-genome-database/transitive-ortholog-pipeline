@@ -58,8 +58,6 @@ public class Process {
         for (Ortholog sSOSO : subjectSpeciesOtherSpeciesOrthologs) {
             // check if there is subjectSpecies - otherSpecies non-transitive ortholog
             if (sSOSO.getOrthologTypeKey() != this.transitiveOrthologType) {
-                //if (subjectSpeciesOtherSpeciesOrthologs.size()>2)
-                    //System.out.println("Won't update --- src id: " + sSOSO.getSrcRgdId() + " -- dest id:" + sSOSO.getDestRgdId());
                 return true;
             }
         }
