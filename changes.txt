@@ -1,6 +1,7 @@
 Jun 8, 2026
   cached per-gene ortholog lookups to cut redundant DB queries; removed unused commons-net/httpclient deps; minor cleanups; updated dependencies
   delete phase: filter stale transitive orthologs in SQL instead of scanning the whole table (was the dominant cost, ~4-5 min/species)
+  delete phase: drive the lookup off the species/composite indexes via nested-loop hints, keys only (requires indexes GENETOGENE_SRC_TYPE_LMD_IDX and GENETOGENE_DEST_TYPE_LMD_IDX)
 
 May 12, 2026
   added MemoryMonitor; updated dependencies
