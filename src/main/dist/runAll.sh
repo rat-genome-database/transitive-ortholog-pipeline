@@ -10,6 +10,6 @@ if [ "$SERVER" == "REED" ]; then
 fi
 
 # run for all species in RGD, except human (transitive orthologs are made between human and given species)
-$APPDIR/run.sh "0" 2>&1 > $APPDIR/run.log
+$APPDIR/run.sh "0" > $APPDIR/run.log 2>&1
 
 mailx -s "[$SERVER] transitive orthos for all species" $EMAILLIST < $APPDIR/logs/summary.log

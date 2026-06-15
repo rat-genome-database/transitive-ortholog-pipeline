@@ -1,3 +1,6 @@
+Jun 15, 2026
+  non-zero exit codes on missing/wrong parameter; routed abort messages through the logger; fixed runAll.sh log redirect
+
 Jun 8, 2026
   cached per-gene ortholog lookups to cut redundant DB queries; removed unused commons-net/httpclient deps; minor cleanups; updated dependencies
   delete phase: filter stale transitive orthologs in SQL instead of scanning the whole table (was the dominant cost, ~4-5 min/species)

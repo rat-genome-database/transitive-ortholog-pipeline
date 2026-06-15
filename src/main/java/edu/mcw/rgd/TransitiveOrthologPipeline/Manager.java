@@ -46,27 +46,23 @@ public class Manager {
         MemoryMonitor memoryMonitor = new MemoryMonitor();
         memoryMonitor.start();
 
-        if( args == null || args.length == 0 ){
-            System.out.println("");
-            System.out.println("            Missing parameter!                  ");
-            System.out.println("----------- Run with subject species type KEY other than Human! -----------");
-            System.exit(0);
+        if( args.length == 0 ){
+            manager.logger.error("Missing parameter! Run with subject species type KEY (or name) other than Human.");
+            System.exit(1);
         }
 
         int speciesTypeKey = SpeciesType.parse(args[0]);
 
         if( speciesTypeKey == SpeciesType.HUMAN ){
-            System.out.println("");
-            System.out.println("            Wrong parameter!                  ");
-            System.out.println("----------- Run with subject species type KEY other than Human! -----------");
-            System.exit(0);
+            manager.logger.error("Wrong parameter! Run with subject species type KEY (or name) other than Human.");
+            System.exit(1);
         }
 
         else{
 
             if (SpeciesType.getCommonName(speciesTypeKey).equals("")){
-                System.out.println("There is no such species type!   - speciesTypeKey="+speciesTypeKey);
-                System.exit(0);
+                manager.logger.error("There is no such species type! - speciesTypeKey="+speciesTypeKey);
+                System.exit(1);
             }
 
             manager.logger.info("========== Species: " +  SpeciesType.getCommonName(speciesTypeKey)  + " ==========");
